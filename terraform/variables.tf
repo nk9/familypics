@@ -17,7 +17,16 @@ variable "ssh_public_key" {
 }
 
 variable "compartment_ocid" {
+  description = "OCID for the root compartment"
 }
 
 variable "region" {
+}
+
+variable "hostname" {
+  default = "familypics"
+}
+
+variable "host_domain" {
+  default = "familypics.kocharhook.com"
 }
