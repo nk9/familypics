@@ -2,7 +2,7 @@
 resource "oci_load_balancer_load_balancer" "free_load_balancer" {
   #Required
   compartment_id = local.compartment_id
-  display_name   = "alwaysFreeLoadBalancer"
+  display_name   = "familypics_lb"
   shape          = "flexible"
   shape_details {
     maximum_bandwidth_in_mbps = 10
@@ -116,19 +116,6 @@ resource "oci_load_balancer_certificate" "load_balancer_certificate" {
 
   lifecycle {
     create_before_destroy = true
-  }
-}
-
-resource "oci_load_balancer_listener" "load_balancer_listener1" {
-  load_balancer_id         = oci_load_balancer_load_balancer.free_load_balancer.id
-  name                     = "https"
-  default_backend_set_name = oci_load_balancer_backend_set.free_load_balancer_backend_set.name
-  port                     = 443
-  protocol                 = "HTTP"
-
-  ssl_configuration {
-    certificate_name        = oci_load_balancer_certificate.load_balancer_certificate.certificate_name
-    verify_peer_certificate = false
   }
 }
 

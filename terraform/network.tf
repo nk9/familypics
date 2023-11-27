@@ -1,9 +1,9 @@
 
-resource "oci_core_virtual_network" "test_vcn" {
+resource "oci_core_virtual_network" "familypics" {
   cidr_block     = "10.1.0.0/16"
   compartment_id = local.compartment_id
-  display_name   = "testVCN"
-  dns_label      = "testvcn"
+  display_name   = "familypicsVCN"
+  dns_label      = "familypicsvcn"
 }
 
 resource "oci_core_subnet" "test_subnet" {
@@ -12,20 +12,20 @@ resource "oci_core_subnet" "test_subnet" {
   dns_label         = "testsubnet"
   security_list_ids = [oci_core_security_list.test_security_list.id]
   compartment_id    = local.compartment_id
-  vcn_id            = oci_core_virtual_network.test_vcn.id
+  vcn_id            = oci_core_virtual_network.familypics.id
   route_table_id    = oci_core_route_table.test_route_table.id
-  dhcp_options_id   = oci_core_virtual_network.test_vcn.default_dhcp_options_id
+  dhcp_options_id   = oci_core_virtual_network.familypics.default_dhcp_options_id
 }
 
 resource "oci_core_internet_gateway" "test_internet_gateway" {
   compartment_id = local.compartment_id
   display_name   = "testIG"
-  vcn_id         = oci_core_virtual_network.test_vcn.id
+  vcn_id         = oci_core_virtual_network.familypics.id
 }
 
 resource "oci_core_route_table" "test_route_table" {
   compartment_id = local.compartment_id
-  vcn_id         = oci_core_virtual_network.test_vcn.id
+  vcn_id         = oci_core_virtual_network.familypics.id
   display_name   = "testRouteTable"
 
   route_rules {
@@ -37,7 +37,7 @@ resource "oci_core_route_table" "test_route_table" {
 
 resource "oci_core_security_list" "test_security_list" {
   compartment_id = local.compartment_id
-  vcn_id         = oci_core_virtual_network.test_vcn.id
+  vcn_id         = oci_core_virtual_network.familypics.id
   display_name   = "testSecurityList"
 
   egress_security_rules {
