@@ -35,3 +35,4 @@ terraform.rc
 
 # Sublime
 *.sublime-workspace
+.DS_Store
