@@ -1,3 +1,7 @@
+locals {
+  tcp      = "6" # IANA protocol number
+  cidr_all = "0.0.0.0/0"
+}
 
 resource "oci_core_virtual_network" "familypics" {
   cidr_block     = "10.1.0.0/16"
@@ -29,7 +33,7 @@ resource "oci_core_route_table" "test_route_table" {
   display_name   = "testRouteTable"
 
   route_rules {
-    destination       = "0.0.0.0/0"
+    destination       = local.cidr_all
     destination_type  = "CIDR_BLOCK"
     network_entity_id = oci_core_internet_gateway.test_internet_gateway.id
   }
@@ -41,13 +45,14 @@ resource "oci_core_security_list" "test_security_list" {
   display_name   = "testSecurityList"
 
   egress_security_rules {
-    protocol    = "6"
-    destination = "0.0.0.0/0"
+    protocol    = local.tcp
+    destination = local.cidr_all
   }
 
+  # SSH
   ingress_security_rules {
-    protocol = "6"
-    source   = "0.0.0.0/0"
+    protocol = local.tcp
+    source   = local.cidr_all
 
     tcp_options {
       max = "22"
@@ -55,29 +60,10 @@ resource "oci_core_security_list" "test_security_list" {
     }
   }
 
+  # HTTP
   ingress_security_rules {
-    protocol = "6"
-    source   = "0.0.0.0/0"
-
-    tcp_options {
-      max = "3000"
-      min = "3000"
-    }
-  }
-
-  ingress_security_rules {
-    protocol = "6"
-    source   = "0.0.0.0/0"
-
-    tcp_options {
-      max = "3005"
-      min = "3005"
-    }
-  }
-
-  ingress_security_rules {
-    protocol = "6"
-    source   = "0.0.0.0/0"
+    protocol = local.tcp
+    source   = local.cidr_all
 
     tcp_options {
       max = "80"
