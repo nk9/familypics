@@ -35,14 +35,14 @@ resource "oci_load_balancer_backend_set" "free_load_balancer_backend_set" {
 resource "oci_load_balancer_backend" "free_load_balancer_test_backend0" {
   #Required
   backendset_name  = oci_load_balancer_backend_set.free_load_balancer_backend_set.name
-  ip_address       = oci_core_instance.familypics.public_ip
+  ip_address       = oci_core_instance.familypics2.public_ip
   load_balancer_id = oci_load_balancer_load_balancer.free_load_balancer.id
   port             = "80"
 }
 
 resource "oci_load_balancer_hostname" "test_hostname1" {
   #Required
-  hostname         = "app.free.com"
+  hostname         = "family.kocharhook.com"
   load_balancer_id = oci_load_balancer_load_balancer.free_load_balancer.id
   name             = var.hostname
 }
@@ -119,16 +119,53 @@ resource "oci_load_balancer_certificate" "load_balancer_certificate" {
   }
 }
 
+resource "oci_logging_log_group" "familypics" {
+  compartment_id = local.compartment_id
+  display_name   = "familypics"
+}
+
+resource "oci_logging_log" "familypics-error" {
+  display_name = replace("log-familypics-error", " ", "-")
+  log_group_id = oci_logging_log_group.familypics.id
+  log_type     = "SERVICE"
+
+  configuration {
+    source {
+      category    = "error"
+      resource    = oci_load_balancer_load_balancer.free_load_balancer.id
+      service     = "loadbalancer"
+      source_type = "OCISERVICE"
+    }
+
+    # compartment_id = local.compartment_id
+  }
+
+  is_enabled         = true
+  retention_duration = 30
+}
+
+resource "oci_logging_log" "familypics" {
+  display_name = replace("log-familypics", " ", "-")
+  log_group_id = oci_logging_log_group.familypics.id
+  log_type     = "SERVICE"
+
+  configuration {
+    source {
+      category    = "access"
+      resource    = oci_load_balancer_load_balancer.free_load_balancer.id
+      service     = "loadbalancer"
+      source_type = "OCISERVICE"
+    }
+
+    # compartment_id = local.compartment_id
+  }
+
+  is_enabled         = true
+  retention_duration = 30
+}
+
+
 output "lb_public_ip" {
   value = [oci_load_balancer_load_balancer.free_load_balancer.ip_address_details]
 }
 
-data "oci_core_vnic_attachments" "app_vnics" {
-  compartment_id      = local.compartment_id
-  availability_domain = data.oci_identity_availability_domain.ad.name
-  instance_id         = oci_core_instance.familypics.id
-}
-
-data "oci_core_vnic" "app_vnic" {
-  vnic_id = data.oci_core_vnic_attachments.app_vnics.vnic_attachments[0]["vnic_id"]
-}

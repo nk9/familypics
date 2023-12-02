@@ -26,32 +26,22 @@ provider "oci" {
   private_key  = var.private_key
 }
 
-variable "instance_shape" {
-  default = "VM.Standard.A1.Flex" # "VM.Standard.E2.1.Micro"
-}
-
-data "oci_identity_availability_domain" "ad" {
-  compartment_id = var.tenancy_ocid
-  ad_number      = 3
-}
-
-
-# See https://docs.oracle.com/iaas/images/
-data "oci_core_images" "test_images" {
-  compartment_id           = var.compartment_ocid
-  operating_system         = "Oracle Linux"
-  operating_system_version = "9"
-  shape                    = var.instance_shape
-  sort_by                  = "TIMECREATED"
-  sort_order               = "DESC"
-}
-
-
 locals {
   compartment_id = oci_identity_compartment.familypics.compartment_id
 }
 
 
+data "oci_core_vnic_attachments" "app_vnics" {
+  compartment_id      = local.compartment_id
+  availability_domain = data.oci_identity_availability_domain.ad.name
+  instance_id         = oci_core_instance.familypics2.id
+}
+
+data "oci_core_vnic" "app_vnic" {
+  vnic_id = data.oci_core_vnic_attachments.app_vnics.vnic_attachments[0]["vnic_id"]
+}
+
 output "app" {
-  value = "http://${data.oci_core_vnic.app_vnic.public_ip_address}"
+  description = "The public IP for the instance"
+  value       = "http://${data.oci_core_vnic.app_vnic.public_ip_address}"
 }
