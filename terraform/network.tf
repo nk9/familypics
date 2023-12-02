@@ -70,4 +70,15 @@ resource "oci_core_security_list" "test_security_list" {
       min = "80"
     }
   }
+
+  # HTTPS
+  ingress_security_rules {
+    protocol = local.tcp
+    source   = local.cidr_all
+
+    tcp_options {
+      max = "443"
+      min = "443"
+    }
+  }
 }
