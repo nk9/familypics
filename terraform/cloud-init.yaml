@@ -14,14 +14,6 @@ fs_setup:
 mounts:
   - [ /dev/sdb, /mnt/data, ext4, "defaults,_netdev,nofail", "0", "2" ]
 
-runcmd:
-  - until mountpoint -q /mnt/data; do sleep 2; done
-  - mkdir -p /mnt/data/postgres
-  - mkdir -p /mnt/data/photos
-  - chown -R 999:999 /mnt/data/postgres
-  - chown ubuntu:ubuntu /mnt/data/photos
-  - chmod 700 /mnt/data/postgres
-
 #####
 # Install Docker and friends
 #####
@@ -31,6 +23,14 @@ packages:
   - gnupg
 
 runcmd:
+  - echo "=== Setting up data mount"
+  - until mountpoint -q /mnt/data; do sleep 2; done
+  - mkdir -p /mnt/data/postgres
+  - mkdir -p /mnt/data/photos
+  - chown -R 999:999 /mnt/data/postgres
+  - chown ubuntu:ubuntu /mnt/data/photos
+  - chmod 700 /mnt/data/postgres
+  - echo "=== Installing Docker"
   - install -m 0755 -d /etc/apt/keyrings
   - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
   - chmod a+r /etc/apt/keyrings/docker.gpg
