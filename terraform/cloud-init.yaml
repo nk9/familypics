@@ -26,9 +26,14 @@ runcmd:
   - echo "=== Setting up data mount"
   - until mountpoint -q /mnt/data; do sleep 2; done
   - mkdir -p /mnt/data/postgres
-  - mkdir -p /mnt/data/photos
+  - mkdir -p /mnt/data/pigallery2/images
+  - mkdir -p /mnt/data/pigallery2/config
+  - mkdir -p /mnt/data/pigallery2/db-data
+  - mkdir -p /mnt/data/pigallery2/tmp
+  - mkdir -p /mnt/data/docker
   - chown -R 999:999 /mnt/data/postgres
-  - chown ubuntu:ubuntu /mnt/data/photos
+  - chown -R ubuntu:ubuntu /mnt/data/pigallery2
+  - chown ubuntu:ubuntu /mnt/data/docker
   - chmod 700 /mnt/data/postgres
   - echo "=== Installing Docker"
   - install -m 0755 -d /etc/apt/keyrings
@@ -40,3 +45,9 @@ runcmd:
   - usermod -aG docker ubuntu
   - systemctl enable docker
   - systemctl start docker
+  - echo "=== Starting Docker compose"
+  - cd /mnt/data/docker
+  - docker compose up -d
+  - echo "=== Append persistent .bashrc"
+  - cat /mnt/data/config/bashrc_custom >> /home/ubuntu/.bashrc
+  - chown ubuntu:ubuntu /home/ubuntu/.bashrc
