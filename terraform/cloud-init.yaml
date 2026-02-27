@@ -48,6 +48,8 @@ runcmd:
   - echo "=== Starting Docker compose"
   - cd /mnt/data/docker
   - docker compose up -d
+  - echo "=== Create data mount symlink"
+  - ln -s /mnt/data /home/ubuntu/d
   - echo "=== Append persistent .bashrc"
   - cat /mnt/data/config/bashrc_custom >> /home/ubuntu/.bashrc
   - chown ubuntu:ubuntu /home/ubuntu/.bashrc
