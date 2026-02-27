@@ -1,0 +1,42 @@
+#cloud-config
+package_update: true
+package_upgrade: true
+
+#####
+# Mount data volume (formatting if needed)
+#####
+fs_setup:
+  - label: data
+    filesystem: ext4
+    device: /dev/sdb
+    overwrite: false
+
+mounts:
+  - [ /dev/sdb, /mnt/data, ext4, "defaults,_netdev,nofail", "0", "2" ]
+
+runcmd:
+  - until mountpoint -q /mnt/data; do sleep 2; done
+  - mkdir -p /mnt/data/postgres
+  - mkdir -p /mnt/data/photos
+  - chown -R 999:999 /mnt/data/postgres
+  - chown ubuntu:ubuntu /mnt/data/photos
+  - chmod 700 /mnt/data/postgres
+
+#####
+# Install Docker and friends
+#####
+packages:
+  - ca-certificates
+  - curl
+  - gnupg
+
+runcmd:
+  - install -m 0755 -d /etc/apt/keyrings
+  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+  - chmod a+r /etc/apt/keyrings/docker.gpg
+  - echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
+  - apt-get update
+  - apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+  - usermod -aG docker ubuntu
+  - systemctl enable docker
+  - systemctl start docker
