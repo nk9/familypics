@@ -1,4 +1,18 @@
+set dotenv-load
+
 pg_rest DUMPFILE:
-	docker exec -i $(docker ps -q --filter "name=docker-postgres") pg_restore -U postgres -d postgres --clean --if-exists --disable-triggers < {{DUMPFILE}}
+	docker exec -i $(docker ps -q --filter "name=docker-postgres") pg_restore \
+		-U postgres \
+		-d postgres \
+		--clean --if-exists --disable-triggers < {{DUMPFILE}}
 pg_dump DUMPFILE:
-	pg_dump -h 127.0.0.1 -p 54322 -U postgres -d postgres -n offreg -n public --data-only -Fc -f {{DUMPFILE}}
+	pg_dump \
+		-h 127.0.0.1 \
+		-p 54322 \
+		-U postgres \
+		-d postgres \
+		--data-only \
+		-n offreg \
+		-n public \
+		--exclude-table=public._sqlx_migrations \
+		-Fc -f {{DUMPFILE}}
