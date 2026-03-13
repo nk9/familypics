@@ -1,0 +1,6 @@
+# Persistent .bashrc contents, from /mnt/data/config/bashrc_custom
+# This will be appended to the default .bashrc via could-init
+
+export PATH="$PATH:/mnt/data/config/bin"
+alias dc='docker compose'
+alias psqll='docker compose  -f /mnt/data/docker/docker-compose.yaml exec postgres psql -U postgres'

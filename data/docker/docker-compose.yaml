@@ -2,13 +2,13 @@ services:
   postgres:
     image: supabase/postgres:17.6.1.091_arm64
     restart: always
-    env_file: /mnt/data/docker/.env
+    env_file: ${DATA_ROOT}/docker/.env
     command: postgres -c config_file=/etc/postgresql/postgresql.conf
     ports:
       - "127.0.0.1:5432:5432" # Accessible only from inside the server
     volumes:
-      - /mnt/data/postgres:/var/lib/postgresql/data
-      - /mnt/data/docker/init:/docker-entrypoint-initdb.d
+      - ${DATA_ROOT}/postgres:/var/lib/postgresql/data
+      - ${DATA_ROOT}/docker/init:/docker-entrypoint-initdb.d
 
   postgrest:
     container_name: postgrest
@@ -23,21 +23,27 @@ services:
       - "3001:3000"
     depends_on:
       - postgres
-    env_file: /mnt/data/docker/.env
+    env_file: ${DATA_ROOT}/docker/.env
+
+
+  meilisearch:
+    image: getmeili/meilisearch
+    ports:
+      - "7700:7700"
 
   pigallery2:
     image: bpatrik/pigallery2:latest
     container_name: pigallery2
     restart: always
     env_file:
-      - /mnt/data/docker/.env
+      - ${DATA_ROOT}/docker/.env
     ports:
       - "3000:3000"
     volumes:
-      - "/mnt/data/pigallery2/config:/app/data/config"
-      - "/mnt/data/pigallery2/db-data:/app/data/db"
-      - "/mnt/data/pigallery2/images:/app/data/images:ro" # ':ro' means read-only
-      - "/mnt/data/pigallery2/tmp:/app/data/tmp"
+      - "${DATA_ROOT}/pigallery2/config:/app/data/config"
+      - "${DATA_ROOT}/pigallery2/db-data:/app/data/db"
+      - "${DATA_ROOT}/pigallery2/images:/app/data/images:ro" # ':ro' means read-only
+      - "${DATA_ROOT}/pigallery2/tmp:/app/data/tmp"
 
   caddy:
     image: caddy:2
@@ -46,7 +52,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - /mnt/data/docker/caddy/Caddyfile:/etc/caddy/Caddyfile
+      - ${DATA_ROOT}/docker/caddy/Caddyfile:/etc/caddy/Caddyfile
       - caddy_data:/data
       - caddy_config:/config
 

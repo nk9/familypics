@@ -35,5 +35,10 @@ terraform.rc
 
 # Sublime
 *.sublime-workspace
+
+# Various folders
+data/pigallery2
+data/postgres
+
 .DS_Store
 .env
