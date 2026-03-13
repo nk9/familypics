@@ -32,5 +32,5 @@ locals {
 
 output "app" {
   description = "The public IP for the instance"
-  value       = "http://${oci_core_public_ip.static_ip.ip_address}"
+  value       = "${oci_core_public_ip.static_ip.ip_address}"
 }

@@ -1,8 +1,8 @@
 init:
     terraform -chdir=terraform init
 
-apply:
-    terraform -chdir=terraform apply
+apply *ARGS:
+    terraform -chdir=terraform apply {{ARGS}}
 
-plan:
-    terraform -chdir=terraform plan
+plan *ARGS:
+    terraform -chdir=terraform plan {{ARGS}}
