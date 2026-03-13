@@ -3,7 +3,7 @@ family.kocharhook.com {
 }
 
 db.gannett.cc {
-    reverse_proxy postgrest:3000  {
+    reverse_proxy postgrest:3010  {
         header_up X-Forwarded-Proto {scheme}
         header_up X-Forwarded-Host {host}
     }

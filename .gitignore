@@ -39,6 +39,10 @@ terraform.rc
 # Various folders
 data/pigallery2
 data/postgres
+**/dumps/*
+
+# Meilisearch
+data/meili_data/
 
 .DS_Store
 .env
