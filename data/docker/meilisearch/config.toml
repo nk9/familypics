@@ -1,0 +1,3 @@
+# db_path = "/meili_data"
+http_addr = "0.0.0.0:7700"
+env = "production"

@@ -20,22 +20,23 @@ services:
           cpus: '1'
           memory: 1G
     ports:
-      - "3010:3000"
+      - "127.0.0.1:3010:3000" # Accessible only from inside the server
     depends_on:
       - postgres
     env_file: ${DATA_ROOT}/docker/.env
 
 
   meilisearch:
-    image: getmeili/meilisearch
+    image: getmeili/meilisearch:v1.55.0
+    restart: always
     ports:
-      - "7700:7700"
+      - "127.0.0.1:7700:7700"
     environment:
       MEILI_MASTER_KEY: ${MEILI_MASTER_KEY}
       MEILI_ENV: production
     volumes:
       - "${DATA_ROOT}/meili_data:/meili_data"
-      # - "${DATA_ROOT}/docker/meilisearch/config.toml:meili_config/config.toml"
+      # - "${DATA_ROOT}/docker/meilisearch/config.toml:/meili_config/config.toml"
     # command: >
     #   meilisearch
     #   --config-file-path /meili_config/config.toml
@@ -47,7 +48,7 @@ services:
     env_file:
       - ${DATA_ROOT}/docker/.env
     ports:
-      - "3020:3000"
+      - "127.0.0.1:3020:3000" # Accessible only from inside the server
     volumes:
       - "${DATA_ROOT}/pigallery2/config:/app/data/config"
       - "${DATA_ROOT}/pigallery2/db-data:/app/data/db"
