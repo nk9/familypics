@@ -1,4 +1,9 @@
 family.kocharhook.com {
+    # Mitigate CVE-2026-111497 (Node.js Brotli decoder) until pigallery2
+    # ships a release on Node >= 22.23.4. Remove once upgraded.
+    @brotli_body header_regexp Content-Encoding (?i)\bbr\b
+    respond @brotli_body 415
+
     reverse_proxy pigallery2:80
 }
 
