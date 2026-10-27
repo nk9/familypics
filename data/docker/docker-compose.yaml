@@ -48,7 +48,7 @@ services:
     env_file:
       - ${DATA_ROOT}/docker/.env
     ports:
-      - "127.0.0.1:3020:3000" # Accessible only from inside the server
+      - "127.0.0.1:3020:80" # Accessible only from inside the server
     volumes:
       - "${DATA_ROOT}/pigallery2/config:/app/data/config"
       - "${DATA_ROOT}/pigallery2/db-data:/app/data/db"
@@ -64,9 +64,6 @@ services:
       - "443:443"
     volumes:
       - ${DATA_ROOT}/docker/caddy/Caddyfile:/etc/caddy/Caddyfile
-      - caddy_data:/data
-      - caddy_config:/config
-
-volumes:
-  caddy_data:
-  caddy_config:
+      # On the data volume so TLS certs survive instance replacement
+      - ${DATA_ROOT}/caddy/data:/data
+      - ${DATA_ROOT}/caddy/config:/config
