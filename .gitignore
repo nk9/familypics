@@ -50,3 +50,7 @@ data/meili_data/
 
 # Supabase experiment (see supabase-local branch)
 data/docker/volumes/
+
+# Caddy runtime state (certs and private keys)
+data/docker/caddy/data/
+data/docker/caddy/config/

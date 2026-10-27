@@ -65,5 +65,5 @@ services:
     volumes:
       - ${DATA_ROOT}/docker/caddy/Caddyfile:/etc/caddy/Caddyfile
       # On the data volume so TLS certs survive instance replacement
-      - ${DATA_ROOT}/caddy/data:/data
-      - ${DATA_ROOT}/caddy/config:/config
+      - ${DATA_ROOT}/docker/caddy/data:/data
+      - ${DATA_ROOT}/docker/caddy/config:/config
